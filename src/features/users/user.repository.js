@@ -13,4 +13,8 @@ const findUserByMail = async (email) => {
   return await Users.findOne({ email }).select("+password");
 };
 
-export { createNewUserRepo, findUserById, findUserByMail };
+const getAllUsersRepo = async (userId) => {
+  return await Users.find({ _id: { $ne: userId } });
+};
+
+export { createNewUserRepo, findUserById, findUserByMail, getAllUsersRepo };

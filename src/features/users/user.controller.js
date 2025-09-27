@@ -5,6 +5,7 @@ import {
   createNewUserRepo,
   findUserById,
   findUserByMail,
+  getAllUsersRepo,
 } from "./user.repository.js";
 import sendTheMail from "../../config/mailer.js";
 import userRegistration from "../../utils/emails/userRegistration.js";
@@ -73,6 +74,10 @@ const updateName = async (req, res, next) => {};
 
 const updateProfilePic = async (req, res, next) => {};
 
+const getAllUsers = async (req, res, next) => {
+  const users = await getAllUsersRepo(req.USER._id);
+  res.status(200).json({ success: true, users });
+};
 export {
   registerUser,
   loginUser,
@@ -80,4 +85,5 @@ export {
   updatePassword,
   updateName,
   updateProfilePic,
+  getAllUsers,
 };

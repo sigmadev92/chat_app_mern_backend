@@ -8,6 +8,7 @@ const authMiddleware = (req, res, next) => {
   }
 
   const result = jwt.verify(token, JWT_SECRET_KEY);
+  console.log(result);
 
   if (!result) {
     return next(
@@ -15,7 +16,8 @@ const authMiddleware = (req, res, next) => {
     );
   }
 
-  req.USER = result;
+  req.USER = { ...result, iat: "", exp: "" };
+  req.token = token;
   next();
 };
 

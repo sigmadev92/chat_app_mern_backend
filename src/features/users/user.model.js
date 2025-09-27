@@ -58,7 +58,7 @@ userSchema.pre("save", async function (next) {
 // JWT Token
 userSchema.methods.getJWTToken = function () {
   return jwt.sign(
-    { id: this._id, fullName: this.fullName, email: this.email },
+    { _id: this._id, fullName: this.fullName, email: this.email },
     JWT_SECRET_KEY,
     {
       expiresIn: JWT_EXPIRES_IN,
