@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import userRouter from "./src/features/users/user.routes.js";
 import { authMiddleware } from "./src/middlewares/authentication.js";
 import messageRouter from "./src/features/messages/message.routes.js";
+import notesRouter from "./src/features/notes/notes.routes.js";
 const app = express();
 app.use(
   cors({
@@ -30,6 +31,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/users", userRouter);
 app.use("/api/messages", authMiddleware, messageRouter);
+app.use("/api/notes", authMiddleware, notesRouter);
 app.use(routeNotFound);
 app.use(errorHandler);
 
