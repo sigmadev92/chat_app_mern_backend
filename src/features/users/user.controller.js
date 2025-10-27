@@ -72,7 +72,22 @@ const updatePassword = async (req, res, next) => {};
 
 const updateName = async (req, res, next) => {};
 
-const updateProfilePic = async (req, res, next) => {};
+const updateProfilePic = async (req, res, next) => {
+  try {
+    const { path: imageUrl, filename: publicId } = req.file;
+
+    console.log(imageUrl, publicId);
+    const arr = imageUrl.split("/");
+    const len = arr.length;
+    const imageName = arr[len - 1];
+    res.json({
+      success: true,
+      imageName,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
 
 const getAllUsers = async (req, res, next) => {
   const users = await getAllUsersRepo(req.USER._id);
