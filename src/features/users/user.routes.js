@@ -4,12 +4,14 @@ import {
   loginUser,
   logoutUser,
   recoverPassword,
+  updateProfilePic,
   registerUser,
   updatePassword,
 } from "./user.controller.js";
 import validateRegData from "../../middlewares/validations/users/registration.js";
 import validateLoginData from "../../middlewares/validations/users/login.js";
 import { authMiddleware } from "../../middlewares/authentication.js";
+import upload from "../../config/multer.js";
 
 const userRouter = Router();
 
@@ -23,6 +25,12 @@ userRouter.get("/auth", authMiddleware, (req, res) => {
 userRouter.post("/password/recover", recoverPassword);
 userRouter.post("/password/update", updatePassword);
 userRouter.get("/all", authMiddleware, getAllUsers);
+userRouter.put(
+  "/profile-pic",
+  authMiddleware,
+  upload.single("profilePic"),
+  updateProfilePic
+);
 userRouter.get(
   "/logout",
   (req, res, next) => {

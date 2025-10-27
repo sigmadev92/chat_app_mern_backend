@@ -23,19 +23,6 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please enter your password"],
     select: false,
   },
-  profileImg: {
-    public_id: {
-      type: String,
-      required: true,
-      default: "1234567890",
-    },
-    url: {
-      type: String,
-      required: true,
-      default:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVA_HrQLjkHiJ2Ag5RGuwbFeDKRLfldnDasw&s",
-    },
-  },
   role: {
     type: String,
     default: "user",
