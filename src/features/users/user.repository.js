@@ -17,4 +17,19 @@ const getAllUsersRepo = async (userId) => {
   return await Users.find({ _id: { $ne: userId } });
 };
 
-export { createNewUserRepo, findUserById, findUserByMail, getAllUsersRepo };
+const saveProfilePic = async (userId, imageUrl) => {
+  try {
+    const user = await Users.findById(userId);
+    user.profilePic = imageUrl;
+    await user.save();
+  } catch (error) {
+    console.log(error);
+  }
+};
+export {
+  createNewUserRepo,
+  findUserById,
+  findUserByMail,
+  getAllUsersRepo,
+  saveProfilePic,
+};

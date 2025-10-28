@@ -1,11 +1,10 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import CustomError from "../../middlewares/errorHandler.js";
 import {
   createNewUserRepo,
   findUserById,
   findUserByMail,
   getAllUsersRepo,
+  saveProfilePic,
 } from "./user.repository.js";
 import sendTheMail from "../../config/mailer.js";
 import userRegistration from "../../utils/emails/userRegistration.js";
@@ -47,14 +46,20 @@ const loginUser = async (req, res, next) => {
       new CustomError(403, "This Email is not registered with our system")
     );
   }
-  console.log("here-2");
+
   const pswrdMatched = await user.comparePassword(password);
-  console.log("here2");
+
   if (!pswrdMatched) {
     return next(new CustomError(403, "Invalid Password"));
   }
   //user is authenticated;
   sendToken(user, res, 200);
+};
+
+const getAuth = async (req, res) => {
+  const userId = req.USER._id;
+  const user = await findUserById(userId);
+  return res.status(200).send({ success: true, user, token: req.token });
 };
 export const logoutUser = async (req, res, next) => {
   res
@@ -77,12 +82,11 @@ const updateProfilePic = async (req, res, next) => {
     const { path: imageUrl, filename: publicId } = req.file;
 
     console.log(imageUrl, publicId);
-    const arr = imageUrl.split("/");
-    const len = arr.length;
-    const imageName = arr[len - 1];
-    res.json({
+
+    await saveProfilePic(req.USER._id, imageUrl);
+    res.status(200).json({
       success: true,
-      imageName,
+      imageUrl,
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -96,6 +100,7 @@ const getAllUsers = async (req, res, next) => {
 export {
   registerUser,
   loginUser,
+  getAuth,
   recoverPassword,
   updatePassword,
   updateName,

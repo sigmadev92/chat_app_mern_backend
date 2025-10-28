@@ -23,6 +23,14 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please enter your password"],
     select: false,
   },
+  profilePic: {
+    type: String,
+  },
+  gender: {
+    type: String,
+    default: "NS",
+    enum: ["M", "F", "O", "NS"],
+  },
   role: {
     type: String,
     default: "user",
@@ -45,7 +53,12 @@ userSchema.pre("save", async function (next) {
 // JWT Token
 userSchema.methods.getJWTToken = function () {
   return jwt.sign(
-    { _id: this._id, fullName: this.fullName, email: this.email },
+    {
+      _id: this._id,
+      fullName: this.fullName,
+      email: this.email,
+      profilePic: this.profilePic,
+    },
     JWT_SECRET_KEY,
     {
       expiresIn: JWT_EXPIRES_IN,

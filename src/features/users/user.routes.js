@@ -7,6 +7,7 @@ import {
   updateProfilePic,
   registerUser,
   updatePassword,
+  getAuth,
 } from "./user.controller.js";
 import validateRegData from "../../middlewares/validations/users/registration.js";
 import validateLoginData from "../../middlewares/validations/users/login.js";
@@ -17,11 +18,7 @@ const userRouter = Router();
 
 userRouter.post("/register", validateRegData, registerUser);
 userRouter.post("/login", validateLoginData, loginUser);
-userRouter.get("/auth", authMiddleware, (req, res) => {
-  return res
-    .status(200)
-    .send({ success: true, user: req.USER, token: req.token });
-});
+userRouter.get("/auth", authMiddleware, getAuth);
 userRouter.post("/password/recover", recoverPassword);
 userRouter.post("/password/update", updatePassword);
 userRouter.get("/all", authMiddleware, getAllUsers);

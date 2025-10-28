@@ -17,6 +17,8 @@ const authMiddleware = (req, res, next) => {
   }
 
   req.USER = { ...result, iat: "", exp: "" };
+  delete req.USER.iat;
+  delete req.USER.exp;
   req.token = token;
   next();
 };
