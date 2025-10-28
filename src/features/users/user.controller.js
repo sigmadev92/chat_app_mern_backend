@@ -3,13 +3,15 @@ import {
   createNewUserRepo,
   findUserById,
   findUserByMail,
+  findUserbyPasswordToken,
   getAllUsersRepo,
   saveProfilePic,
 } from "./user.repository.js";
 import sendTheMail from "../../config/mailer.js";
 import userRegistration from "../../utils/emails/userRegistration.js";
 import sendToken from "../../utils/responses/sendToken.js";
-
+import { CLIENT_URL } from "../../config/env.js";
+import crypto from "crypto";
 const registerUser = async (req, res, next) => {
   try {
     const result = await createNewUserRepo(req.body);
@@ -71,11 +73,65 @@ export const logoutUser = async (req, res, next) => {
     .json({ success: true, msg: "logout successful" });
 };
 
-const recoverPassword = async (req, res, next) => {};
+const recoverPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await findUserByMail(email);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-const updatePassword = async (req, res, next) => {};
+    // Generate token
+    const resetToken = await user.getResetPasswordToken();
+    console.log(resetToken);
+    await user.save();
 
-const updateName = async (req, res, next) => {};
+    const resetURL = `${CLIENT_URL}/password/reset/${resetToken}`;
+
+    const message = `
+      <p>You requested a password reset</p>
+      <p>Click <a href="${resetURL}">here</a> to reset your password.</p>
+      <p>This link will expire in 10 minutes.</p>
+    `;
+
+    await sendTheMail({
+      receiver: email,
+      htmlString: message,
+      subject: "Link for Updating Password",
+    });
+
+    res.status(200).json({ success: true, message: "Reset email sent" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  try {
+    const user = await findUserbyPasswordToken(resetPasswordToken);
+    if (!user)
+      return next(new CustomError(403, "Invalid token or token Expired"));
+
+    // Update password
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 const updateProfilePic = async (req, res, next) => {
   try {
@@ -102,8 +158,7 @@ export {
   loginUser,
   getAuth,
   recoverPassword,
-  updatePassword,
-  updateName,
+  resetPassword,
   updateProfilePic,
   getAllUsers,
 };

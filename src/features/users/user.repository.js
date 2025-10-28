@@ -13,6 +13,13 @@ const findUserByMail = async (email) => {
   return await Users.findOne({ email }).select("+password");
 };
 
+const findUserbyPasswordToken = async (resetPasswordToken) => {
+  const user = await Users.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+  return user;
+};
 const getAllUsersRepo = async (userId) => {
   return await Users.find({ _id: { $ne: userId } });
 };
@@ -30,6 +37,7 @@ export {
   createNewUserRepo,
   findUserById,
   findUserByMail,
+  findUserbyPasswordToken,
   getAllUsersRepo,
   saveProfilePic,
 };

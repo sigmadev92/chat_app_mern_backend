@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { SMTP_MAIL, SMTP_PASS } from "./env.js";
+import { SMTP_MAIL, SMTP_PASS, JWT_SECRET_KEY } from "./env.js";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -10,6 +10,7 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendTheMail({ receiver, subject, htmlString }) {
+  console.log(SMTP_MAIL, SMTP_PASS, receiver, JWT_SECRET_KEY);
   try {
     await transporter.sendMail({
       from: SMTP_MAIL,

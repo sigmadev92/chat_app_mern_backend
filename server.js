@@ -1,6 +1,6 @@
 import app from "./app.js";
 import http from "http";
-import { PORT } from "./src/config/env.js";
+import { PORT, SMTP_MAIL, SMTP_PASS } from "./src/config/env.js";
 import connectToDbViaMongoose from "./src/config/mongooseDb.js";
 import { Server } from "socket.io";
 import initSocket from "./src/config/socket.js";
