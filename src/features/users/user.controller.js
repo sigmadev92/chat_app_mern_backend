@@ -5,6 +5,7 @@ import {
   findUserByMail,
   findUserbyPasswordToken,
   getAllUsersRepo,
+  saveProfile,
   saveProfilePic,
 } from "./user.repository.js";
 import sendTheMail from "../../config/mailer.js";
@@ -153,6 +154,23 @@ const getAllUsers = async (req, res, next) => {
   const users = await getAllUsersRepo(req.USER._id);
   res.status(200).json({ success: true, users });
 };
+
+const updateProfile = async (req, res, next) => {
+  const userId = req.USER._id;
+  const data = req.body;
+
+  if (!data) {
+    return next(new CustomError(400, "Bldy Missing"));
+  }
+
+  try {
+    const response = await saveProfile(userId, data);
+    return res.status(200).json({ success: true, response });
+  } catch (error) {
+    console.log(error);
+    return next(new CustomError(500, error.message));
+  }
+};
 export {
   registerUser,
   loginUser,
@@ -161,4 +179,5 @@ export {
   resetPassword,
   updateProfilePic,
   getAllUsers,
+  updateProfile,
 };

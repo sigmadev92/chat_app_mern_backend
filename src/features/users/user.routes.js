@@ -8,6 +8,7 @@ import {
   registerUser,
   getAuth,
   resetPassword,
+  updateProfile,
 } from "./user.controller.js";
 import validateRegData from "../../middlewares/validations/users/registration.js";
 import validateLoginData from "../../middlewares/validations/users/login.js";
@@ -28,6 +29,15 @@ userRouter.put(
   authMiddleware,
   upload.single("profilePic"),
   updateProfilePic
+);
+userRouter.post(
+  "/profile",
+  authMiddleware,
+  (req, res, next) => {
+    console.log(req.headers["content-type"]);
+    next();
+  },
+  updateProfile
 );
 userRouter.get(
   "/logout",

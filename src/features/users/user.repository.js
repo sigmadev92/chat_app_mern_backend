@@ -33,6 +33,16 @@ const saveProfilePic = async (userId, imageUrl) => {
     console.log(error);
   }
 };
+
+const saveProfile = async (userId, data) => {
+  console.log("Before on the saveProfileRepo");
+  console.log(data);
+  const updatedUser = await Users.findByIdAndUpdate(userId, data, {
+    new: true,
+  });
+  console.log("After on saveProfile repo", updatedUser);
+  return updatedUser;
+};
 export {
   createNewUserRepo,
   findUserById,
@@ -40,4 +50,5 @@ export {
   findUserbyPasswordToken,
   getAllUsersRepo,
   saveProfilePic,
+  saveProfile,
 };
