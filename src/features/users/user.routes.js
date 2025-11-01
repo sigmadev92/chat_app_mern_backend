@@ -9,6 +9,7 @@ import {
   getAuth,
   resetPassword,
   updateProfile,
+  getProfile,
 } from "./user.controller.js";
 import validateRegData from "../../middlewares/validations/users/registration.js";
 import validateLoginData from "../../middlewares/validations/users/login.js";
@@ -22,7 +23,7 @@ userRouter.post("/login", validateLoginData, loginUser);
 userRouter.get("/auth", authMiddleware, getAuth);
 userRouter.post("/password/recover", recoverPassword);
 userRouter.post("/reset-password/:token", resetPassword);
-
+userRouter.get("/profile/:userId", authMiddleware, getProfile);
 userRouter.get("/all", authMiddleware, getAllUsers);
 userRouter.put(
   "/profile-pic",

@@ -149,7 +149,16 @@ const updateProfilePic = async (req, res, next) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+const getProfile = async (req, res, next) => {
+  const { userId } = req.params;
+  console.log("On getProfile");
+  if (!userId) return next(new CustomError(400, "User ID missing"));
 
+  const user = await findUserById(userId);
+  if (!user) return next(new CustomError(400, "Invalid user ID"));
+
+  return res.status(200).json({ success: true, user });
+};
 const getAllUsers = async (req, res, next) => {
   const users = await getAllUsersRepo(req.USER._id);
   res.status(200).json({ success: true, users });
@@ -179,5 +188,6 @@ export {
   resetPassword,
   updateProfilePic,
   getAllUsers,
+  getProfile,
   updateProfile,
 };
